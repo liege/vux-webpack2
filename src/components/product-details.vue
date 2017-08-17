@@ -7,13 +7,13 @@
             <div class="bd">
                 <ul>
                     <li>
-                        <a href="#"><img _src="http://placehold.it/750x500"/ src="../img/loading.gif"></a>
+                        <a href="#"><img src="http://placehold.it/750x500"></a>
                     </li>
                     <li>
-                        <a href="#"><img _src="http://placehold.it/750x500"/ src="../img/loading.gif"></a>
+                        <a href="#"><img src="http://placehold.it/750x500"></a>
                     </li>
                     <li>
-                        <a href="#"><img _src="http://placehold.it/750x500"/ src="../img/loading.gif"></a>
+                        <a href="#"><img src="http://placehold.it/750x500"></a>
                     </li>
                 </ul>
             </div>
@@ -27,7 +27,7 @@
             <div class="t_option">
                 <div class="t_size" @click="ScaleSize">
                     <span  v-text='Choice'></span>
-                    <span v-else='show' v-text='myChoice'></span>
+                    <!-- <span v-else='show' v-text='myChoice'></span> -->
                     <i class="entrance_icon"></i>
                 </div>
                 <div class="parameter" @click="ViewParameters"><span>产品参数</span><i class="entrance_icon"></i></div>
@@ -44,7 +44,7 @@
         <div class="t_bottom menu">
             <div class="shopping_cart">
                 <a href="#">
-                <i><span v-if="sopCar">{{sopCar}}</span></i>
+                <!-- <i><span v-if="sopCar">{{sopCar}}</span></i> -->
                 <p>购物车</p></a>
             </div>
             <div class="add_cart" @click="add_cart">加入购物车</div>
@@ -57,18 +57,18 @@
                     <p class="merchandise_news">￥<span class="cost" >{{finalPrice}}</span>
                         <br/><span class="inventory" ><span v-text='inventory'>1345</span></span>
                         <br/>
-                        <span class="at_present" v-if='show' v-text='Choice'></span>
-                        <span class="at_present" v-else='show' v-text='myChoice'></span>
+                        <!-- <span class="at_present" v-if='show' v-text='Choice'></span> -->
+                        <!-- <span class="at_present" v-else='show' v-text='myChoice'></span> -->
                     </p>
                 </div>
                 <div id="wrapper" class="size_select">
                     <div class="scroll_box">
                         <div>
                             <!-- 商品选择 -->
-                            <div class="standard" v-for="(num,item) in select">
+                            <div class="standard" v-for="(item,num) in select">
                                 <p class="standard_tit">{{item.title}}</p>
                                 <ul class="standard_list clearfix">
-                                    <li v-for="(index,item1) in item.select1" :class="{select_on : sortId[num] == index}" @tap="check(num,index,item1.content,item1.inventory,item1.price)">{{item1.content}}</li>
+                                    <li v-for="(item1,index) in item.select1" :class="{select_on : sortId[num] == index}" @tap="check(num,index,item1.content,item1.inventory,item1.price)">{{item1.content}}</li>
                                 </ul>
                             </div>
                         </div>
@@ -107,7 +107,7 @@
 </style>
 
 <script type="text/javascript">
-import '../js/lib/TouchSlide.1.1.js';
+import '../lib/TouchSlide.1.1.js';
 
     var select = [{
         title: "请选择规格",
@@ -134,8 +134,8 @@ import '../js/lib/TouchSlide.1.1.js';
     ]
     var myChoice=['已选择'];
 
-module.exports = {
-    data: function(){
+export default {
+    data () {
         return {
             show:true,
             iscur: 0,
@@ -154,12 +154,12 @@ module.exports = {
             parameter:parameter
         }
     },
-    init: function(){
+    created () {
         console.log('init');
         console.log('deviceid: ' + this.$route.params.deviceId);
         console.log('dataId: ' + this.$route.params.dataId);
     },
-    ready: function(){
+    mounted () {
         TouchSlide({
             slideCell: "#focus",
             mainCell: ".bd ul",

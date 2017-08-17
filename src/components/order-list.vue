@@ -1,10 +1,18 @@
 <template>
-    <div class="container order-list-container">12
-<tab>
-      <tab-item selected @on-item-click="onItemClick">已发货</tab-item>
-      <tab-item @on-item-click="onItemClick">未发货</tab-item>
-      <tab-item @on-item-click="onItemClick">全部订单</tab-item>
-</tab>
+    <div class="container order-list-container">
+        <tab>
+            <tab-item selected @on-item-click="onItemClick">全部</tab-item>
+            <tab-item @on-item-click="onItemClick">待付款</tab-item>
+            <tab-item @on-item-click="onItemClick">待发货</tab-item>
+            <tab-item @on-item-click="onItemClick">待收货</tab-item>
+            <tab-item @on-item-click="onItemClick">已完成</tab-item>
+        </tab>
+
+        <ul class="order-list">
+            <li>
+                <div class="title">2017-08-17 17:48:50<span class="status">状态</span></div>
+            </li>
+        </ul>
     </div>
 </template>
 
@@ -32,7 +40,7 @@ export default {
   mounted () {
   },
   methods: {
-        onItemClick (index) {
+    onItemClick (index) {
       console.log('on item click:', index)
     }
   }

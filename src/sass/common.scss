@@ -288,6 +288,9 @@ body{
 .product-details-container {
     .focus {
         height: px2rem(500);
+        img {
+          height: 100%;
+        }
     }
     .commodity_top {
         position: absolute;

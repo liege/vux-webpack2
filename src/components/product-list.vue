@@ -4,22 +4,17 @@
             <img src="http://placehold.it/750x290" alt="">
         </div>
         <ul class="product-list">
-            <li v-link="{ name: 'product-details', params: { deviceId: 123, dataId:456 }}">
-                <a href="javascript:;"><img src="http://placehold.it/750x290" alt=""></a>
-                <div class="info">
-                    <p class="title">马来西亚进口 马马马马马马马马马 马马马马马马马马马</p>
-                    <p class="price">活动价<span>￥9.90</span></p>
-                </div>
-                <div class="add"><span class="icon icon-addcart"></span></div>
-            </li>            
-            <li v-link="{ name: 'product-details', params: { deviceId: 123, dataId:456 }}">
-                <a href="javascript:;"><img src="http://placehold.it/750x290" alt=""></a>
-                <div class="info">
-                    <p class="title">马来西亚进口 马马马马马马马马马 马马马马马马马马马</p>
-                    <p class="price">活动价<span>￥9.90</span></p>
-                </div>
-                <div class="add"><span class="icon icon-addcart"></span></div>
-            </li>
+            
+                <li><router-link :to="{ name: 'product-details', params: { deviceId: 123, dataId:456 }}">
+                    <a href="javascript:;"><img src="http://placehold.it/750x290" alt=""></a>
+                    <div class="info">
+                        <p class="title">马来西亚进口 马马马马马马马马马 马马马马马马马马马</p>
+                        <p class="price">活动价<span>￥9.90</span></p>
+                    </div>
+                    <div class="add"><span class="icon icon-addcart"></span></div>
+                </router-link></li>
+            
+
         </ul>
         <ul class="menu">
             <li>
@@ -44,25 +39,13 @@
 </style>
 
 <script type="text/javascript">
-import '../js/lib/TouchSlide.1.1.js';
 
 
-module.exports = {
+export default {
     init: function(){
         console.log('init');
         console.log('deviceid: ' + this.$route.params.deviceId);
         console.log('dataId: ' + this.$route.params.dataId);
-    },
-    ready: function(){
-        TouchSlide({
-            slideCell: "#focus",
-            mainCell: ".bd ul",
-            titCell: ".hd ul",
-            effect: "left",
-            autoPlay: true, //自动播放
-            autoPage: true, //自动分页
-            switchLoad: "_src" //切换加载，真实图片路径为"_src"
-        });
     }
 }
 </script>
