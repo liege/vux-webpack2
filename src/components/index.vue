@@ -1,25 +1,15 @@
 <template>
     <div class="container index-container">
         <!-- 焦点图 -->
-<swiper :list="demo03_list" auto dots-class="custom-bottom" dots-position="center"></swiper>
+<swiper :list="demo03_list" auto dots-class="custom-bottom" dots-position="center" :show-desc-mask="false"></swiper>
         <!-- 分类导航 -->
         <ul class="sort">
-            <router-link :to="{ name: 'product-list', params: { deviceId: 123, dataId:456 }}"><li>
-                <a href="javascript:;"><img src="http://placehold.it/100x100" alt=""></a>
-                <div class="title">进口食品</div>
+          <template  v-for="(item, index) in menuList">  
+            <router-link :to="{ name: 'product-list', params: { deviceId: item.id, dataId:456 }}"><li>
+                <img :src="'/static/pic-sort-' + index +'.png'" height="89" width="88" alt="">
+                <div class="title">{{item.operationDesc}}</div>
             </li></router-link>
-            <li>
-                <a href="javascript:;"><img src="http://placehold.it/100x100" alt=""></a>
-                <div class="title">数码家电</div>
-            </li>
-            <li>
-                <a href="javascript:;"><img src="http://placehold.it/100x100" alt=""></a>
-                <div class="title">有线订购</div>
-            </li>
-            <li>
-                <a href="javascript:;"><img src="http://placehold.it/100x100" alt=""></a>
-                <div class="title">知言学习</div>
-            </li>
+          </template>
         </ul>
         <!-- 产品列表 -->
         <ul class="hot">
@@ -37,18 +27,25 @@
         </ul>
         <!-- 底部菜单 -->
         <ul class="menu">
+          <router-link :to="{ name: 'index'}">
             <li>
-                <a href="javascript:;"><span class="icon icon-index"></span></a>
+                <span class="icon icon-index"></span>
                 <div class="title">首页</div>
             </li>
+          </router-link>
+          <router-link :to="{ name: 'cart', params: { deviceId: 123, dataId:456 }}">
             <li>
-                <a href="javascript:;"><span class="icon icon-cart"></span></a>
+                <span class="icon icon-cart"></span>
                 <div class="title">购物车</div>
+                <div class="count">1</div>
             </li>
-            <router-link :to="{ name: 'order-center', params: { deviceId: 123, dataId:456 }}"><li>
-                <a href="javascript:;"><span class="icon icon-order"></span></a>
+          </router-link>
+          <router-link :to="{ name: 'order-center', params: { deviceId: 123, dataId:456 }}">
+            <li>
+                <span class="icon icon-order"></span>
                 <div class="title">我的订单</div>
-            </li></router-link>
+            </li>
+          </router-link>
         </ul>
     </div>
 </template>
@@ -141,7 +138,8 @@ export default {
   data () {
     return {
         demo03_list: demoList,
-        hotList: hotList
+        hotList: hotList,
+        menuList: ''
     }
   },
   components: {
@@ -152,16 +150,45 @@ export default {
     Divider
   },
   created () {
-    // console.log(TouchSlide)
-    fetch('http://192.168.20.23:8083/bill-steward/shopping/queryGoods?channel=app&goodsCategory=C090301&startRow=10&pageSize=2')
+    console.log(BASEURL);
+    var that = this;
+    var tsUrl = 'http://192.168.20.23:8083/order-center/pay/test'
+    var url = 'https://api.github.com/repos/vuejs/vue/commits?per_page=3&sha='
+    // fetch('http://192.168.20.23:8083/bill-steward/shopping/queryGoods?channel=app&goodsCategory=C090301&startRow=10&pageSize=2')
+    //   .then(function(response) {
+    //     // alert(response);
+    //     return response.text()
+    //   }).then(function(body) {
+    //     this.hotList = body.result;
+    //     console.info(this.hotList)
+    //   }).catch(() => {
+    //     alert('error');
+    //   });
+
+    // fetch('http://192.168.20.23:8083/bill-steward/steward/menu')
+    //   .then(function(response) {
+    //     return response.text()
+    //   }).then(function(body) {
+
+    //     var list = JSON.parse(body).object.list.filter(function (item) {
+    //       return item.spare2 == "0002"
+    //     });
+    //     that.menuList = list.reverse()
+    //   }).catch(() => {
+    //     console.error('error');
+    //   });
+
+    fetch('http://192.168.203.20:8194/bill-steward/shopping/queryGoods')
       .then(function(response) {
         return response.text()
       }).then(function(body) {
-        console.info(body.result)
-        // this.hotList = 
-      })
+        console.log(body)
+      }).catch(() => {
+        console.error('error');
+      });
   },
   mounted () {
+    // console.log(BASEURL);
   }
 }
 </script>

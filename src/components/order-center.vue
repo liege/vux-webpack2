@@ -81,7 +81,7 @@ module.exports = {
     },
     methods: {
         chooseShop: function (item) {
-            if(typeof item.checked == "undefined"){
+            if(item.checked == "undefined"){
                 this.$set(item, "checked", true);
             }else{
                 item.checked = !item.checked;

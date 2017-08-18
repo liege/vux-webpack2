@@ -136,8 +136,27 @@ body{
         color: #ff3034;
         li {
             width: px2rem(100);
-            margin: px2rem(18) 0;
+            margin: px2rem(14) 0;
             text-align: center;
+            line-height: px2rem(30);
+            position: relative;
+            .count {
+              position: absolute;
+              right: px2rem(12);
+              top: px2rem(-6);
+              background: #ff3034;
+              color: #fff;
+              font-size: px2rem(18);
+              line-height: px2rem(30);
+              border-radius: px2rem(24);
+              padding: px2rem(2) px2rem(8);
+              height: px2rem(24);
+              // width: px2rem(24);
+              // text-align: center;
+            }
+        }
+        a {
+          color: #929292;
         }
 
     }
@@ -149,14 +168,17 @@ body{
         font-size: px2rem(24);
         display: flex;
         flex-wrap:nowrap;
-        padding: px2rem(34) px2rem(44) px2rem(24) px2rem(43);
+        padding: px2rem(10) px2rem(44) px2rem(0) px2rem(43);
         justify-content:space-between;
+        background: #fff;
         li {
             width: px2rem(100);
             margin: px2rem(20) 0;
             line-height: px2rem(60);
+            text-align: center;
             img {
-                width:100%;
+                width: px2rem(88);
+                height: px2rem(89);
             }
         }
     }

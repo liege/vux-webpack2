@@ -107,7 +107,7 @@
 </style>
 
 <script type="text/javascript">
-import '../lib/TouchSlide.1.1.js';
+// import '../lib/TouchSlide.1.1.js';
 
     var select = [{
         title: "请选择规格",
@@ -160,15 +160,15 @@ export default {
         console.log('dataId: ' + this.$route.params.dataId);
     },
     mounted () {
-        TouchSlide({
-            slideCell: "#focus",
-            mainCell: ".bd ul",
-            titCell: ".hd ul",
-            effect: "left",
-            autoPlay: true, //自动播放
-            autoPage: true, //自动分页
-            switchLoad: "_src" //切换加载，真实图片路径为"_src"
-        });
+        // TouchSlide({
+        //     slideCell: "#focus",
+        //     mainCell: ".bd ul",
+        //     titCell: ".hd ul",
+        //     effect: "left",
+        //     autoPlay: true, //自动播放
+        //     autoPage: true, //自动分页
+        //     switchLoad: "_src" //切换加载，真实图片路径为"_src"
+        // });
         console.log('this.select',this.select);
     },
         methods: {
