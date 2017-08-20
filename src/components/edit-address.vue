@@ -4,7 +4,7 @@
             <span @click="test">编辑收货地址</span><img src="../img/icon_plus.png">
         </div>
         <div class="con">
-            <input type="text" name="" v-model="nameInp" placeholder="">
+            <input type="text" name="" v-model="nameInp" placeholder="姓名">
             <input type="text" name="" v-model="phoneInp">
             <input type="text" name="" v-model="addressInp">
             <textarea v-model="detailInp" placeholder=""></textarea>

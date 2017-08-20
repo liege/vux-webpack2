@@ -132,3 +132,22 @@ i,em{
     color: #fff;
     background-color: #4f5051;
 }
+
+
+
+
+
+$list: cart,
+index,
+addcart,
+order,
+address,
+call;
+@for $i from 1 through length($list) {
+    .icon-#{nth($list,$i)} {
+        background: url(../img/icon-#{nth($list,$i)}.png) 0 0 no-repeat;
+        background-size: 100% 100%;
+    }
+}
+
+

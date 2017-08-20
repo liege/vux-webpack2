@@ -6,6 +6,7 @@
 
 <script>
 import './lib/hotcss.js';
+import './lib/iscroll-probe.js';
 import './sass/base.scss';
 import './sass/common.scss';
 export default {

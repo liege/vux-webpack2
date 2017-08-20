@@ -26,9 +26,11 @@
         </div>
         <div class="service">
             <div class="title">客户服务</div>
+            <router-link :to="{ name: 'manage-address'}">
             <div>
                 <i class="icon icon-address"></i>收货地址<i class="entrance_icon"></i>
             </div>
+            </router-link>
             <div>
                 <a href="tel:4007280800"><i class="icon icon-call"></i>客服咨询 <i class="entrance_icon"></i></a>
             </div>

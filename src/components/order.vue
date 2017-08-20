@@ -16,17 +16,18 @@
                         <p>× {{item.num}}</p>
                     </div>
                 </li>
-                <li>
-                    <div>
-                        <p>商品合计</p>
-                        <p>运费</p>
-                    </div>
-                    <div>
-                        <p>¥256.00</p>
-                        <p>¥128.00</p>
-                    </div>      
-                </li>
+<div class="total">
+    <div>
+        <p>商品合计</p>
+        <p>运费</p>
+    </div>
+    <div>
+        <p>¥256.00</p>
+        <p>¥128.00</p>
+    </div>
+</div>
             </ul>
+
         </div>
         <footer>
             <span>总计：{{totalMoney | formatMoney}}</span><span>确认付款</span>
@@ -42,7 +43,7 @@
 <script type="text/javascript">
 
 module.exports = {
-    data: function(){
+    data () {
         return {
                 totalMoney: 0,
                 totalCheckNum: 0,
@@ -62,9 +63,6 @@ module.exports = {
         console.log('init');
         console.log('deviceid: ' + this.$route.params.deviceId);
         console.log('dataId: ' + this.$route.params.dataId);
-    },
-    ready: function(){
-        console.log('this.select',this.select);
     },
     filters: {
         formatMoney:function (value) {
@@ -122,7 +120,6 @@ module.exports = {
             //scrollbars: true,
             tap:true
         });
-        this.totalNum = this.shopList.length;
     }
 }
 </script>

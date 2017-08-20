@@ -13,17 +13,21 @@
         </ul>
         <!-- 产品列表 -->
         <ul class="hot">
+            <router-link :to="{ name: 'product-details', params: { deviceId: 12, dataId:456 }}">
             <li v-for="(item,index) in hotList">
-                <a href="javascript:;"><img :src="item.picUrl" alt=""></a>
+                
+                <img :src="item.picUrl" alt="">
                 <div class="info">
                     <p class="title" v-text="item.title"></p>
                     <p class="details" v-text="item.info"></p>
                     <p class="price">市场价<span>￥{{item.price}}</span></p>
                     <p class="promPrice">￥{{item.promPrice}}</p>
                 </div>
-                <div class="add"><span class="icon icon-addcart"></span></div>
+                <div class="add"><span class="icon icon-addcart" @tap.stop="add"></span></div>
                 <div class="type">促</div>
-            </li>            
+            </li>   
+            </router-link>
+                     
         </ul>
         <!-- 底部菜单 -->
         <ul class="menu">
@@ -134,7 +138,7 @@ const demoList = imgList.map((one, index) => ({
   img: one
 }))
 export default {
-  name: 'hello',
+  name: 'index',
   data () {
     return {
         demo03_list: demoList,
@@ -178,17 +182,32 @@ export default {
     //     console.error('error');
     //   });
 
-    fetch('http://192.168.203.20:8194/bill-steward/shopping/queryGoods')
-      .then(function(response) {
-        return response.text()
-      }).then(function(body) {
-        console.log(body)
-      }).catch(() => {
-        console.error('error');
-      });
+    // fetch('http://192.168.203.20:8194/bill-steward/shopping/queryGoods')
+    //   .then(function(response) {
+    //     return response.text()
+    //   }).then(function(body) {
+    //     console.log(body)
+    //   }).catch(() => {
+    //     console.error('error');
+    //   });
   },
   mounted () {
+        var myScroll = new IScroll('#app',{
+            mouseWheel: true,
+            // scrollbars: true,
+            tap:true
+        });
     // console.log(BASEURL);
+  },
+  methods : {
+    add: function (e) {
+        console.log(1);
+        e.stopP
+        return false;
+    },
+    ts: function (a) {
+        // console.log(a);
+    }
   }
 }
 </script>

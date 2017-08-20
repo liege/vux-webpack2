@@ -1,11 +1,16 @@
 <template>
     <div class="container cart-container">
-        <div class="title">
-            <span>购物车({{totalNum}})</span>
+
+        <div class="title" v-show="shopList.length">
+            购物车共{{totalNum}}件宝贝<span>编辑</span>
         </div>
-        <div class="con" id="wrapper">
+        <div class="tips" v-show="shopList.length == 0">
+            <img src="/static/cart-null.png" alt="">
+            <div>赶紧去逛逛吧~</div>
+        </div>
+        <div class="con" id="wrapper" v-show="shopList.length">
             <ul>
-                <li v-for="(index,item) in shopList">
+                <li v-for="(item, index) in shopList">
                     <div class="chek" :class="{'cheked': item.checked}" @tap="chooseShop(item)"></div>
                     <div class="con-img"><img :src="item.img"></div>
                     <div class="con-detail">
@@ -19,7 +24,7 @@
                 <li></li>
             </ul>
         </div>
-        <footer>
+        <footer v-show="shopList.length">
             <span>总计：{{totalMoney | formatMoney}}</span><span>去结算({{totalCheckNum}})</span>
         </footer>
     </div>
@@ -27,17 +32,10 @@
 
 <style lang="sass">
 
-
 </style>
 
 <script type="text/javascript">
-
-module.exports = {
-    data: function(){
-        return {
-                totalMoney: 0,
-                totalCheckNum: 0,
-                shopList:[
+var list1 = [
                     {img: "http://placehold.it/750x360", detail: "澳洲进口奶粉 德运 Devondale脱脂成人奶粉 1kg", price: "4900", num: 1},
                     {img: "http://placehold.it/750x360", detail: "澳洲进口奶粉 德运 Devondale脱脂成人奶粉 1kg", price: "4900", num: 2},
                     {img: "http://placehold.it/750x360", detail: "澳洲进口奶粉 德运 Devondale脱脂成人奶粉 1kg", price: "4900", num: 3},
@@ -45,17 +43,20 @@ module.exports = {
                     {img: "http://placehold.it/750x360", detail: "澳洲进口奶粉 德运 Devondale脱脂成人奶粉 1kg", price: "4900", num: 5},
                     {img: "http://placehold.it/750x360", detail: "澳洲进口奶粉 德运 Devondale脱脂成人奶粉 1kg", price: "4900", num: 6},
                     {img: "http://placehold.it/750x360", detail: "澳洲进口奶粉 德运 Devondale脱脂成人奶粉 1kg", price: "4900", num: 7}
-                ],
+                ];
+
+export default {
+    data () {
+        return {
+                totalMoney: 0,
+                totalCheckNum: 0,
+                shopList:list1,
                 chooseList:[]
         }
     },
-    init: function(){
-        console.log('init');
+    created (){
         console.log('deviceid: ' + this.$route.params.deviceId);
         console.log('dataId: ' + this.$route.params.dataId);
-    },
-    ready: function(){
-        console.log('this.select',this.select);
     },
     filters: {
         formatMoney:function (value) {
@@ -107,13 +108,14 @@ module.exports = {
             _this.shopList.splice(index, 1);
         }
     },
-    mounted:function(){
+    mounted (){
+        // this.totalNum = this.shopList.length;
         var myScroll = new IScroll('#wrapper',{
             mouseWheel: true,
-            //scrollbars: true,
+            // scrollbars: true,
             tap:true
         });
-        this.totalNum = this.shopList.length;
+        
     }
 }
 </script>
