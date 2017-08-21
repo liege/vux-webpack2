@@ -1,7 +1,7 @@
 <template>
     <div class="container index-container">
         <!-- 焦点图 -->
-<swiper :list="demo03_list" auto dots-class="custom-bottom" dots-position="center" :show-desc-mask="false"></swiper>
+        <swiper :list="bannerList" auto dots-class="custom-bottom" dots-position="center" :show-desc-mask="false"></swiper>
         <!-- 分类导航 -->
         <ul class="sort">
           <template  v-for="(item, index) in menuList">  
@@ -11,24 +11,34 @@
             </li></router-link>
           </template>
         </ul>
+
+    
         <!-- 产品列表 -->
-        <ul class="hot">
-            <router-link :to="{ name: 'product-details', params: { deviceId: 12, dataId:456 }}">
-            <li v-for="(item,index) in hotList">
-                
+        <ul class="hot" id="scroll">
+
+          <scroller :on-refresh="refresh"
+            :on-infinite="infinite">
+
+
+            <li v-for="(item,index) in hotList" >
+                <router-link :to="{ name: 'product-details', params: { deviceId: 12, dataId:456 }}">
                 <img :src="item.picUrl" alt="">
                 <div class="info">
-                    <p class="title" v-text="item.title"></p>
+                    <p class="title" v-text="item.goodsName"></p>
                     <p class="details" v-text="item.info"></p>
-                    <p class="price">市场价<span>￥{{item.price}}</span></p>
-                    <p class="promPrice">￥{{item.promPrice}}</p>
+                    <p class="price">市场价<span>￥{{item.goodsPrice}}</span></p>
+                    <p class="promPrice">￥{{item.activityPrice}}</p>
                 </div>
-                <div class="add"><span class="icon icon-addcart" @tap.stop="add"></span></div>
+                <div class="add"><span class="icon icon-addcart" @click.prevent="add"></span></div>
                 <div class="type">促</div>
+                </router-link>
             </li>   
-            </router-link>
-                     
+    <div v-for="(item, index) in items" class="row" :class="{'grey-bg': index % 2 == 0}">
+      {{ item }}
+    </div>
+              </scroller>
         </ul>
+
         <!-- 底部菜单 -->
         <ul class="menu">
           <router-link :to="{ name: 'index'}">
@@ -55,79 +65,11 @@
 </template>
 
 <script>
-import { Swiper, GroupTitle, SwiperItem, XButton, Divider } from 'vux'
-var hotList = [
-    {
-        picUrl: 'http://placehold.it/220x200',
-        title: '产品大标题',
-        info: '产品介绍',
-        price: '69',
-        promPrice: '49'
-    },
-    {
-        picUrl: 'http://placehold.it/220x200',
-        title: '产品大标题',
-        info: '产品介绍',
-        price: '69',
-        promPrice: '49'
-    },
-    {
-        picUrl: 'http://placehold.it/220x200',
-        title: '产品大标题',
-        info: '产品介绍',
-        price: '69',
-        promPrice: '49'
-    },
-    {
-        picUrl: 'http://placehold.it/220x200',
-        title: '产品大标题',
-        info: '产品介绍',
-        price: '69',
-        promPrice: '49'
-    },
-    {
-        picUrl: 'http://placehold.it/220x200',
-        title: '产品大标题',
-        info: '产品介绍',
-        price: '69',
-        promPrice: '49'
-    },
-    {
-        picUrl: 'http://placehold.it/220x200',
-        title: '产品大标题',
-        info: '产品介绍',
-        price: '69',
-        promPrice: '49'
-    },
-    {
-        picUrl: 'http://placehold.it/220x200',
-        title: '产品大标题',
-        info: '产品介绍',
-        price: '69',
-        promPrice: '49'
-    },
-    {
-        picUrl: 'http://placehold.it/220x200',
-        title: '产品大标题',
-        info: '产品介绍',
-        price: '69',
-        promPrice: '49'
-    },
-    {
-        picUrl: 'http://placehold.it/220x200',
-        title: '产品大标题',
-        info: '产品介绍',
-        price: '69',
-        promPrice: '49'
-    },
-    {
-        picUrl: 'http://placehold.it/220x200',
-        title: '产品大标题',
-        info: '产品介绍',
-        price: '69',
-        promPrice: '49'
-    }
-]
+import { Swiper, GroupTitle, SwiperItem, XButton, LoadMore } from 'vux'
+import VueScroller from 'vue-scroller'
+import Vue from 'vue'
+Vue.use(VueScroller)
+
 const imgList = [
   'http://placehold.it/750x360/ff6760',
   'http://placehold.it/750x360/780213',
@@ -141,9 +83,14 @@ export default {
   name: 'index',
   data () {
     return {
-        demo03_list: demoList,
-        hotList: hotList,
-        menuList: ''
+        bannerList: demoList,
+        hotList: '',
+        menuList: '',
+        showList1: true,
+        scrollTop: 0,
+        onFetching: false,
+        bottomCount: 20,
+        items: []
     }
   },
   components: {
@@ -151,7 +98,7 @@ export default {
     SwiperItem,
     GroupTitle,
     XButton,
-    Divider
+    LoadMore
   },
   created () {
     console.log(BASEURL);
@@ -168,51 +115,90 @@ export default {
     //   }).catch(() => {
     //     alert('error');
     //   });
+    // 分类菜单
+    fetch(BASEURL + '/bill-steward/steward/menu')
+      .then(function(response) {
+        return response.text()
+      }).then(function(body) {
+        var list = JSON.parse(body).object.list.filter(function (item) {
+          return item.spare2 == "0002"
+        });
 
-    // fetch('http://192.168.20.23:8083/bill-steward/steward/menu')
-    //   .then(function(response) {
-    //     return response.text()
-    //   }).then(function(body) {
-
-    //     var list = JSON.parse(body).object.list.filter(function (item) {
-    //       return item.spare2 == "0002"
-    //     });
-    //     that.menuList = list.reverse()
-    //   }).catch(() => {
-    //     console.error('error');
-    //   });
-
-    // fetch('http://192.168.203.20:8194/bill-steward/shopping/queryGoods')
-    //   .then(function(response) {
-    //     return response.text()
-    //   }).then(function(body) {
-    //     console.log(body)
-    //   }).catch(() => {
-    //     console.error('error');
-    //   });
+        console.log(list);
+        that.menuList = list.reverse()
+      }).catch(() => {
+        console.error('error');
+      });
+    // 商品列表
+    fetch(BASEURL + '/bill-steward/shopping/queryGoods')
+      .then(function(response) {
+        return response.text()
+      }).then(function(body) {
+        that.hotList = JSON.parse(body).result[0].result
+        console.log(that.hotList)
+      }).catch(() => {
+        console.error('error');
+      });
   },
   mounted () {
-        var myScroll = new IScroll('#app',{
-            mouseWheel: true,
-            // scrollbars: true,
-            tap:true
-        });
+    for (var i = 1; i <= 20; i++) {
+      this.items.push(i + ' - keep walking, be 2 with you.');
+    }
+    this.top = 1;
+    this.bottom = 20;
     // console.log(BASEURL);
+
   },
+activated () {
+  // this.$refs.scroller.reset()
+},
   methods : {
     add: function (e) {
-        console.log(1);
-        e.stopP
         return false;
     },
-    ts: function (a) {
-        // console.log(a);
+    refresh: function (done) {
+      var self = this
+      setTimeout(function () {
+        var start = self.top - 1
+        for (var i = start; i > start - 10; i--) {
+          self.items.splice(0, 0, i + ' - keep walking, be 2 with you.');
+        }
+        self.top = self.top - 10;
+        done();
+      }, 1500)
+    },
+
+    infinite: function (done) {
+      var self = this
+        console.log(self.hotList);
+      setTimeout(function () {
+        var start = self.bottom + 1;
+        for (var i = start; i < start + 10; i++) {
+          self.items.push(i + ' - keep walking, be 2 with you.');
+          self.hotList.concat(self.hotList);
+        }
+        self.bottom = self.bottom + 10;
+        done();
+      }, 1500)
     }
   }
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-
+<style>
+.hot {
+    position: relative;
+    height: 1000px;
+}
+.row {
+  width: 100%;
+  height: 50px;
+  padding: 10px 0;
+  font-size: 16px;
+  line-height: 30px;
+  text-align: center;
+  color: #444;
+  background-color: #fff;
+}
 </style>

@@ -4,15 +4,18 @@ import Vue from 'vue'
 import FastClick from 'fastclick'
 import VueRouter from 'vue-router'
 import App from './App'
-import 'whatwg-fetch'
+import fetch from 'whatwg-fetch'
+
 
 Vue.use(VueRouter)
+
 
 const routes = [{
 	    path: '/',
 	    name: 'index',
 	    // component: resolve => require(['./components/index.vue'], resolve)
-	    component: view('index')
+	    component: view('index'),
+	    title: '首页'
 	}, {
 	    path: '/order',
 	    name: 'order',
@@ -49,12 +52,15 @@ const routes = [{
 
 ]
 
-
-
 const router = new VueRouter({
   routes
 })
-
+router.afterEach(function (to) {
+	console.log('-->',to)
+    if (to.name) {
+        document.title = to.name;
+    }
+});
 /**
  * Asynchronously load view (Webpack Lazy loading compatible)
  * @param  {string}   name     the filename (basename) of the view to load.
@@ -64,7 +70,6 @@ function view(name) {
     require(['./components/' + name + '.vue'], resolve);
   }
 };
-
 
 FastClick.attach(document.body)
 

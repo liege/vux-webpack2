@@ -186,7 +186,7 @@ body {
     width: px2rem(750);
     padding-bottom: px2rem(100);
 
-    li {
+    a{
       margin-bottom: px2rem(20);
       position: relative;
       width: px2rem(750);
@@ -466,6 +466,9 @@ body {
       font: px2rem(32)/px2rem(88) $fontF;
       background: #ec9b37;
       color: #fff;
+      a{
+            color: #fff;
+        }
     }
     .purchase {
       background: #f73929;
@@ -897,11 +900,11 @@ $c99: #999;
       border-bottom: #ddd solid px2rem(1);
       &:nth-of-type(1) {
         display: list-item;
-        background: url(../img/icon_address.png) no-repeat px2rem(25) px2rem(84);
-        background-size: px2rem(25) px2rem(32);
+        // background: url(../img/icon_address.png) no-repeat px2rem(25) px2rem(84);
+        // background-size: px2rem(25) px2rem(32);
         height: px2rem(126);
         margin: 0;
-        padding: px2rem(30) px2rem(40) px2rem(44) px2rem(70);
+        padding: px2rem(30) px2rem(40) px2rem(0) px2rem(70);
         border-bottom: px2rem(10) solid $bec;
         p {
           line-height: px2rem(42);
@@ -999,60 +1002,6 @@ $c99: #999;
 // 编辑收货地址
 .edit-address-container {
   width: px2rem(750);
-  .title {
-    width: 100%;
-    height: px2rem(88);
-    line-height: px2rem(88);
-    background: $bff;
-    img {
-      display: inline-block;
-      width: px2rem(17);
-      margin-left: px2rem(25);
-      &:nth-of-type(2) {
-        width: px2rem(32);
-        margin: 0;
-        margin-right: px2rem(25);
-      }
-    }
-    span {
-      display: inline-block;
-      width: px2rem(651);
-      text-align: center;
-      font-size: $f36;
-      color: $c33;
-    }
-  }
-  .con {
-    position: relative;
-    left: 0;
-    top: 0;
-    height: px2rem(500);
-    margin-top: px2rem(10);
-    padding-left: px2rem(25);
-    padding-top: px2rem(12);
-    background: $bff;
-    font-size: $f32;
-    color: $c33;
-    box-sizing: border-box;
-    input[type="text"] {
-      width: px2rem(710);
-      height: px2rem(93);
-      padding-left: px2rem(15);
-      line-height: px2rem(93);
-      border: none;
-      outline: none;
-      background: transparent;
-      border-bottom: px2rem(1) solid #ccc;
-    }
-    textarea {
-      width: px2rem(700);
-      height: px2rem(172);
-      line-height: px2rem(45);
-      padding:px2rem(15);
-      box-sizing: border-box;
-      border: none;
-    }
-  }
   footer {
     display: -webkit-flex;
     display: flex;
@@ -1098,6 +1047,11 @@ $c99: #999;
         left: px2rem(38);
       }
     }
+  }
+  .control {
+    position: fixed;
+    bottom: px2rem(10);
+    width: px2rem(750);
   }
 }
 

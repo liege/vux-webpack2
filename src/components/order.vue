@@ -3,8 +3,9 @@
         <div class="con" id="wrapper">
             <ul>
                 <li>
-                    <p>王双双   138****2480</p>
-                    <p>上海市杨浦区五角场街道武东路198号 财大科技园12层</p>
+                <p><i class="icon icon-address2"></i>请添加收货地址</p>
+<!--                     <p>王双双   138****2480</p>
+                    <p>上海市杨浦区五角场街道武东路198号 财大科技园12层</p> -->
                 </li>
                 <div class="title">订单信息</div>
                 <li v-for="(item, index) in shopList">

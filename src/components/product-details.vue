@@ -44,11 +44,12 @@
         <div class="t_bottom menu">
             <div class="shopping_cart">
                 <a href="#">
-                <!-- <i><span v-if="sopCar">{{sopCar}}</span></i> -->
+                <i><span v-if="sopCar">{{sopCar}}</span></i>
                 <p>购物车</p></a>
             </div>
             <div class="add_cart" @click="add_cart">加入购物车</div>
-            <div class="purchase" v-link="{ name: 'order', params: { deviceId: 123, dataId:456 }}">立即购买</div>
+            <div class="purchase">
+                <router-link :to="{ name: 'order', params: { deviceId: 123, dataId:456 }}">立即购买</router-link></div>
         </div>
         <div class="Scale_modal" @click="close" @touchmove.prevent :class={modal_show:modal_show,bg:!isactive}>
             <div class="dv animated" @click="noclose($event)" :class="{fadeInDownBig:isactive,fadeInUpBig:!isactive}">
