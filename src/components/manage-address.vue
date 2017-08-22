@@ -1,5 +1,6 @@
 <template>
     <div class="container manage_address-container">
+        <toast v-model="toastShow">操作成功</toast>
         <ul class="address_list">
             <li v-for="(item,index) in addressList">
                 <div class="name">
@@ -20,7 +21,7 @@
                         <div>
                             <img src="../img/text.png"> 编辑
                         </div>
-                        <div>
+                        <div @click="delAddress(item.userName,item.provinceCode,item.cityCode,item.districtCode,item.isDefault,item.userPhone,'N',item.addressNo)">
                             <img src="../img/delete.png"> 删除
                         </div>
                     </div>
@@ -36,20 +37,27 @@
 </style>
 
 <script type="text/javascript">
-
+import {Toast} from 'vux';
 export default {
     data () {
         return {
-            addressList: ''
+            addressList: '',
+            userName: '',
+            provinceCode: '',
+            cityCode: '',
+            districtCode: '',
+            isDefault: '',
+            userPhone: '',
+            addressStatus: '',
+            addressNo: '',
+            toastShow: false
         }
     },
-    init: function(){
-        console.log('init');
-        console.log('deviceid: ' + this.$route.params.deviceId);
-        console.log('dataId: ' + this.$route.params.dataId);
+    components: {
+        Toast
     },
-    created: function(){
-        var that = this;
+    created (){
+        var slef = this;
         // 分类菜单
         // fetch(BASEURL + '/bill-steward/user/queryUserShippingAddress' , {
         //     method:'POST',
@@ -65,22 +73,12 @@ export default {
         // }).then(function(body) {
         //     var list = JSON.parse(body).result;
         //     console.log(list);
-        //     that.addressList = list;
+        //     slef.addressList = list;
         //   }).catch(() => {
         //        alert('error');
         //   });
 
-        // 分类菜单
-        fetch(BASEURL + '/bill-steward/user/queryUserShippingAddress?operatorNo=51000001093876')
-        .then(function(response) {
-            return response.text()
-        }).then(function(body) {
-            var list = JSON.parse(body).result;
-            console.log(list);
-            that.addressList = list;
-          }).catch(() => {
-               alert('error');
-          });
+
     },
     filters: {
         formatMoney:function (value) {
@@ -92,10 +90,65 @@ export default {
         
     },
     methods: {
-
+        fetchAddressList () {
+            var self = this;
+            // 地址列表
+            fetch(GET(BASEURL + '/bill-steward/user/queryUserShippingAddress',
+                    {
+                        operatorNo:'51000001093876'
+                    }
+                )
+            )
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                if(data.success) {
+                    var list = data.result;
+                    self.addressList = list;
+                }else {
+                    alert(data.responseDesc)
+                }
+            }).catch((error) => {
+                alert(error);
+            });
+        },
+        delAddress () {
+            // return console.log(arguments[0]);
+            var self = this;
+            // 地址列表
+            fetch(GET(BASEURL + '/bill-steward/user/userShippingAddressManage',
+                    {
+                        userName: arguments[0],
+                        provinceCode: arguments[1],
+                        cityCode: arguments[2],
+                        districtCode: arguments[3],
+                        isDefault: arguments[4],
+                        userPhone: arguments[5],
+                        addressStatus: arguments[6],
+                        addressNo: arguments[7]
+                    }
+                )
+            )
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                if(data.success) {
+                    var list = data.result;
+                    self.toastShow = true;
+                    self.fetchAddressList();
+                }else {
+                    alert(data.responseDesc)
+                }
+            }).catch((error) => {
+                alert(error);
+            });
+        },
+        onHide () {
+            console.log('on hide')
+        },
     },
-    mounted:function(){
-        
+    mounted (){
+        this.fetchAddressList();
     }
 }
 </script>
