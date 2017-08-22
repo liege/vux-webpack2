@@ -33,9 +33,13 @@ const routes = [{
 	    name: 'cart',
 	    component: view('cart')
 	}, {
-	    path: '/address/edit',
+	    path: '/address/edit/:userName/:provinceCode/:cityCode/:districtCode/:isDefault/:userMobile/:addressStatus/:addressNo',
 	    name: 'edit-address',
 	    component: view('edit-address')
+	}, {
+	    path: '/address/add/:userId',
+	    name: 'add-address',
+	    component: view('add-address')
 	}, {
 	    path: '/address/manage',
 	    name: 'manage-address',
@@ -71,17 +75,6 @@ function view(name) {
   }
 };
 
-var get = (url,params) => {
-    let paramsArray = [];  
-    //拼接参数  
-    Object.keys(params).forEach(key => paramsArray.push(key + '=' + params[key]))  
-    if (url.search(/\?/) === -1) {  
-        url += '?' + paramsArray.join('&')  
-    } else {  
-        url += '&' + paramsArray.join('&')  
-    }
-    return url;
-}
 
 
 FastClick.attach(document.body)
