@@ -1,18 +1,20 @@
 <template>
     <div class="container product-list-container">
         <div class="banner">
-            <img src="http://placehold.it/750x290" alt="">
+            <img src="http://192.168.203.10/group1/M00/00/36/wKjLClmdNPSABPlPAAT6Ltd_mwE097.png" alt="">
         </div>
         <ul class="product-list">
             
-                <li><router-link :to="{ name: 'product-details', params: { deviceId: 123, dataId:456 }}">
-                    <a href="javascript:;"><img src="http://placehold.it/750x290" alt=""></a>
+                <li v-for="(item,index) in goodsList">
+                <router-link :to="{ name: 'product-details', params: { deviceId: 123, dataId:456 }}">
+                    <a href="javascript:;"><img :src="picUrl + item.thumbnailAddr" alt=""></a>
                     <div class="info">
-                        <p class="title">马来西亚进口 马马马马马马马马马 马马马马马马马马马</p>
-                        <p class="price">活动价<span>￥9.90</span></p>
+                        <p class="title" v-text="item.summary"></p>
+                        <p class="price">活动价<span>￥{{item.activityPrice}}</span></p>
                     </div>
                     <div class="add"><span class="icon icon-addcart"></span></div>
-                </router-link></li>
+                </router-link>
+                </li>
             
 
         </ul>
@@ -40,12 +42,35 @@
 
 <script type="text/javascript">
 
-
 export default {
+    data () {
+        return {
+            goodsList: '',
+            picUrl: BASEPICURL
+        }
+    },
     init: function(){
         console.log('init');
         console.log('deviceid: ' + this.$route.params.deviceId);
         console.log('dataId: ' + this.$route.params.dataId);
+    },
+    created () {
+        var self = this;
+        // 商品列表
+        fetch(BASEURL + '/bill-steward/shopping/queryGoods')
+            .then(response => response.json())
+            .then(data => {
+            self.goodsList = data.result[0].result
+            console.log(self.goodsList)
+        }).catch((error) => {
+            console.error(error);
+        });
     }
 }
 </script>
+
+
+
+
+
+

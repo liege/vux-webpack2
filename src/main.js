@@ -6,9 +6,10 @@ import VueRouter from 'vue-router'
 import App from './App'
 import fetch from 'whatwg-fetch'
 
+// 导入vuex
+import store from './../store/store'
 
 Vue.use(VueRouter)
-
 
 const routes = [{
 	    path: '/',
@@ -40,6 +41,10 @@ const routes = [{
 	    path: '/address/add/:userId',
 	    name: 'add-address',
 	    component: view('add-address')
+	}, {
+	    path: '/address/select/:userId',
+	    name: 'select-address',
+	    component: view('select-address')
 	}, {
 	    path: '/address/manage',
 	    name: 'manage-address',
@@ -84,5 +89,6 @@ Vue.config.productionTip = false
 /* eslint-disable no-new */
 new Vue({
   router,
+  store,
   render: h => h(App)
 }).$mount('#app-box')

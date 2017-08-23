@@ -20,7 +20,8 @@ module.exports = merge(baseWebpackConfig, {
   plugins: [
     new webpack.DefinePlugin({
       'process.env': config.dev.env,
-      'BASEURL': '"http://192.168.201.47:8081"'
+      'BASEURL': '"http://192.168.201.47:8081"',
+      'BASEPICURL': '"http://192.168.203.10/"'
     }),
     // https://github.com/glenjamin/webpack-hot-middleware#installation--usage
     new webpack.HotModuleReplacementPlugin(),

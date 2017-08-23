@@ -1,12 +1,18 @@
 <template>
     <div class="container order-container">
         <div class="con" id="wrapper">
+            <div class="address" v-show="address">
+                <router-link :to="{ name: 'select-address', params: { deviceId: 12, dataId:456 }}">
+                <p class="user">{{address.userName}}   {{address.userMobile}}</p>
+                <p><i class="icon icon-address2"></i>{{address.provinceName}} {{address.cityName}} {{address.districtName}} {{address.addressDetail}}</p>
+                </router-link>
+            </div>
+            <div class="address" v-show="!address">
+                <router-link :to="{ name: 'add-address', params: { deviceId: 12, dataId:456 }}">
+                <p class="add-address"><i class="icon icon-address2"></i>请添加收货地址</p>
+                </router-link>
+            </div>
             <ul>
-                <li>
-                <p><i class="icon icon-address2"></i>请添加收货地址</p>
-<!--                     <p>王双双   138****2480</p>
-                    <p>上海市杨浦区五角场街道武东路198号 财大科技园12层</p> -->
-                </li>
                 <div class="title">订单信息</div>
                 <li v-for="(item, index) in shopList">
                     <div class="con-img"><img :src="item.img"></div>
@@ -57,13 +63,19 @@ module.exports = {
                     {img: "http://placehold.it/750x360", detail: "澳洲进口奶粉 德运 Devondale脱脂成人奶粉 1kg", price: "4900", num: 6},
                     {img: "http://placehold.it/750x360", detail: "澳洲进口奶粉 德运 Devondale脱脂成人奶粉 1kg", price: "4900", num: 7}
                 ],
-                chooseList:[]
+                chooseList:[],
+                addressList: [],
+                address: {}
         }
     },
-    init: function(){
-        console.log('init');
-        console.log('deviceid: ' + this.$route.params.deviceId);
-        console.log('dataId: ' + this.$route.params.dataId);
+    created () {
+        var addressData = this.$store.state.addressData;
+        if(addressData) {
+            console.log('vuex select',addressData)
+            this.address = addressData
+        }else {
+            this.fetchAddressList();
+        }
     },
     filters: {
         formatMoney:function (value) {
@@ -113,9 +125,34 @@ module.exports = {
             var index = this.shopList.indexOf(product);
             var _this = this;
             _this.shopList.splice(index, 1);
-        }
+        },
+        fetchAddressList () {
+            var self = this;
+            // 地址列表
+            fetch(GET(BASEURL + '/bill-steward/user/queryUserShippingAddress',
+                    {
+                        operatorNo:'51000001093876'
+                    }
+                )
+            )
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                if(data.success) {
+                    var list = data.result;
+                    self.addressList = list; 
+                    self.address = list.filter(function (item) {
+                        return item.isDefault == "Y"
+                    })[0];
+                }else {
+                    alert(data.responseDesc)
+                }
+            }).catch((error) => {
+                alert(error);
+            });
+        },
     },
-    mounted:function(){
+    mounted () {
         var myScroll = new IScroll('#wrapper',{
             mouseWheel: true,
             //scrollbars: true,

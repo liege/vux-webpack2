@@ -22,10 +22,10 @@
 
             <li v-for="(item,index) in hotList" >
                 <router-link :to="{ name: 'product-details', params: { deviceId: 12, dataId:456 }}">
-                <img :src="item.picUrl" alt="">
+                <img :src="picUrl + item.thumbnailAddr" alt="">
                 <div class="info">
                     <p class="title" v-text="item.goodsName"></p>
-                    <p class="details" v-text="item.info"></p>
+                    <p class="details" v-text="item.summary"></p>
                     <p class="price">市场价<span>￥{{item.goodsPrice}}</span></p>
                     <p class="promPrice">￥{{item.activityPrice}}</p>
                 </div>
@@ -61,7 +61,7 @@
             </li>
           </router-link>
         </ul>
-    </div>
+    </div> 
 </template>
 
 <script>
@@ -70,27 +70,19 @@ import VueScroller from 'vue-scroller'
 import Vue from 'vue'
 Vue.use(VueScroller)
 
-const imgList = [
-  'http://placehold.it/750x360/ff6760',
-  'http://placehold.it/750x360/780213',
-  'http://placehold.it/750x360/1830af'
-]
-const demoList = imgList.map((one, index) => ({
-  url: 'javascript:',
-  img: one
-}))
 export default {
   name: 'index',
   data () {
     return {
-        bannerList: demoList,
+        bannerList: [],
         hotList: '',
         menuList: '',
         showList1: true,
         scrollTop: 0,
         onFetching: false,
         bottomCount: 20,
-        items: []
+        items: [],
+        picUrl: BASEPICURL
     }
   },
   components: {
@@ -117,24 +109,29 @@ export default {
     //   });
     // 分类菜单
     fetch(BASEURL + '/bill-steward/steward/menu')
-      .then(function(response) {
-        return response.text()
-      }).then(function(body) {
-        var list = JSON.parse(body).object.list.filter(function (item) {
-          return item.spare2 == "0002"
-        });
+        .then(response => response.json())
+        .then(data => {
+            var list = data.object.list;
+            var menuList = list.filter(function (item) {
+                return item.spare2 == "0002" && item.plateType == "2"
+            });
+            var bannerList = list.filter(function (item) {
+                return item.spare2 == "0002" && item.plateType == "1"
+            });
 
-        console.log(list);
-        that.menuList = list.reverse()
-      }).catch(() => {
-        console.error('error');
-      });
+            that.menuList = menuList.reverse()
+            that.bannerList = bannerList.map((one, index) => ({
+                url: 'javascript:',
+                img: BASEPICURL + one.imgUrl
+            }))
+        }).catch(() => {
+            console.error('error');
+    });
     // 商品列表
     fetch(BASEURL + '/bill-steward/shopping/queryGoods')
-      .then(function(response) {
-        return response.text()
-      }).then(function(body) {
-        that.hotList = JSON.parse(body).result[0].result
+        .then(response => response.json())
+        .then(data => {
+        that.hotList = data.result[0].result
         console.log(that.hotList)
       }).catch(() => {
         console.error('error');
@@ -149,11 +146,11 @@ export default {
     // console.log(BASEURL);
 
   },
-activated () {
-  // this.$refs.scroller.reset()
-},
-  methods : {
-    add: function (e) {
+    activated () {
+      // this.$refs.scroller.reset()
+    },
+    methods : {
+        add: function (e) {
         return false;
     },
     refresh: function (done) {

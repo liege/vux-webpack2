@@ -20,9 +20,9 @@
         </div>
         <div class="trade_box">
             <div class="trade_title">
-                <p class="title">马马马马马马马马 马马马马马马马马马</p>
-                <p class="trade_name">马马马马马马马马 马马马马马马马马马 马马马马马马马马 马马马马马马马马马 马马马马马马马马 马马马马马马马马马</p>
-                <p class="price">￥628.00</p>
+                <p class="title">{{goodsData.goodsName}}</p>
+                <p class="trade_name">{{goodsData.summary}}</p>
+                <p class="price">￥{{goodsData.goodsPrice}}</p>
             </div>
             <div class="t_option">
                 <div class="t_size" @click="ScaleSize">
@@ -54,7 +54,7 @@
         <div class="Scale_modal" @click="close" @touchmove.prevent :class={modal_show:modal_show,bg:!isactive}>
             <div class="dv animated" @click="noclose($event)" :class="{fadeInDownBig:isactive,fadeInUpBig:!isactive}">
                 <div class="parameter_select">
-                    <div class="logo"><img src="http://placehold.it/127x127"></div>
+                    <div class="logo"><img :src="picUrl + goodsData.thumbnailAddr" alt=""></div>
                     <p class="merchandise_news">￥<span class="cost" >{{finalPrice}}</span>
                         <br/><span class="inventory" ><span v-text='inventory'>1345</span></span>
                         <br/>
@@ -66,10 +66,10 @@
                     <div class="scroll_box">
                         <div>
                             <!-- 商品选择 -->
-                            <div class="standard" v-for="(item,num) in select">
-                                <p class="standard_tit">{{item.title}}</p>
+                            <div class="standard" >
+                                <p class="standard_tit">规格</p>
                                 <ul class="standard_list clearfix">
-                                    <li v-for="(item1,index) in item.select1" :class="{select_on : sortId[num] == index}" @tap="check(num,index,item1.content,item1.inventory,item1.price)">{{item1.content}}</li>
+                                    <li v-for="(item,index) in specificationsList" :class="{}" @click="check(index,index,item1.content,item1.inventory,item1.price)">{{item.categoryName}}</li>
                                 </ul>
                             </div>
                         </div>
@@ -110,21 +110,6 @@
 <script type="text/javascript">
 // import '../lib/TouchSlide.1.1.js';
 
-    var select = [{
-        title: "请选择规格",
-        id: "0",
-        select1: [{
-            content: '30ml',price:'200.1',inventory:'1300'
-        }, {
-            content: '60ml',price:'400.2',inventory:'200'
-        }, {
-            content: '90ml',price:'600.3',inventory:'500'
-        }, {
-            content: '150ml',price:'1000.4',inventory:'800'
-        }, {
-            content: '200ml',price:'1400.5',inventory:'1300'
-        }]
-    }];
     var parameter=[
         {name:"品种",price:"化妆品/面霜"},
         {name:"期限使用",price:"2016-12-10至2020-12-10"},
@@ -151,14 +136,29 @@ export default {
             isactive: true,
             modal_show: false,
             modal1_show: false,
-            select: select,
-            parameter:parameter
+            select: '',
+            parameter:parameter,
+            goodsData: '',
+            picUrl: BASEPICURL,
+            specificationsList: ''
         }
     },
     created () {
         console.log('init');
         console.log('deviceid: ' + this.$route.params.deviceId);
         console.log('dataId: ' + this.$route.params.dataId);
+        var self = this;
+        // 商品列表
+        fetch(BASEURL + '/bill-steward/shopping/queryGoodsDetails')
+            .then(response => response.json())
+            .then(data => {
+            var data = data.result[0]
+            self.goodsData = data.goodsQueryRespVo
+            self.specificationsList = data.goodsSpecificationsVoList
+            console.log(self.goodsData)
+        }).catch((error) => {
+            console.error(error);
+        });
     },
     mounted () {
         // TouchSlide({

@@ -1,5 +1,5 @@
 <template>
-    <div class="container manage_address-container">
+    <div class="container manage-address-container">
         <toast v-model="toastShow">操作成功</toast>
         <ul class="address_list">
             <li v-for="(item,index) in addressList">
@@ -23,7 +23,7 @@
                             <img src="../img/text.png"> 编辑
                             </router-link>
                         </div>
-                        <div @click="delAddress(item.userName,item.provinceCode,item.cityCode,item.districtCode,item.isDefault,item.userMobile,'N',item.addressNo)">
+                        <div @click="delAddress(item.addressNo)">
                             <img src="../img/delete.png"> 删除
                         </div>
                     </div>
@@ -120,14 +120,8 @@ export default {
             // 地址列表
             fetch(GET(BASEURL + '/bill-steward/user/userShippingAddressManage',
                     {
-                        userName: arguments[0],
-                        provinceCode: arguments[1],
-                        cityCode: arguments[2],
-                        districtCode: arguments[3],
-                        isDefault: arguments[4],
-                        userMobile: arguments[5],
-                        addressStatus: arguments[6],
-                        addressNo: arguments[7]
+                        addressStatus: 'N',
+                        addressNo: arguments[0]
                     }
                 )
             )
