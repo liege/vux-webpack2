@@ -1,28 +1,12 @@
 <template>
     <div class="container product-details-container">
-        <div id="focus" class="focus">
-            <div class="hd">
-                <ul></ul>
-            </div>
-            <div class="bd">
-                <ul>
-                    <li>
-                        <a href="#"><img src="http://placehold.it/750x500"></a>
-                    </li>
-                    <li>
-                        <a href="#"><img src="http://placehold.it/750x500"></a>
-                    </li>
-                    <li>
-                        <a href="#"><img src="http://placehold.it/750x500"></a>
-                    </li>
-                </ul>
-            </div>
-        </div>
+        <!-- 焦点图 -->
+        <swiper :list="bannerList" height="260px" auto dots-class="custom-bottom" dots-position="center" :show-desc-mask="false"></swiper>
         <div class="trade_box">
             <div class="trade_title">
                 <p class="title">{{goodsData.goodsName}}</p>
                 <p class="trade_name">{{goodsData.summary}}</p>
-                <p class="price">￥{{goodsData.goodsPrice}}</p>
+                <p class="price">￥{{goodsData.activityPrice}} <span>市场价 <i>￥{{goodsData.goodsPrice}}</i></span></p>
             </div>
             <div class="t_option">
                 <div class="t_size" @click="ScaleSize">
@@ -69,7 +53,13 @@
                             <div class="standard" >
                                 <p class="standard_tit">规格</p>
                                 <ul class="standard_list clearfix">
-                                    <li v-for="(item,index) in specificationsList" :class="{}" @click="check(index,index,item1.content,item1.inventory,item1.price)">{{item.categoryName}}</li>
+                                    <checker
+                                    v-model="demo5"
+                                    default-item-class="demo5-item"
+                                    selected-item-class="demo5-item-selected"
+                                    >
+                                      <checker-item v-for="(item,index) in specificationsList" :key="i" :value="item.activityPrice">{{item.categoryName}}</checker-item>
+                                    </checker>
                                 </ul>
                             </div>
                         </div>
@@ -93,7 +83,7 @@
                 <div class="p_top">产品参数</div>
                 <div class="p_middle" id="wrapper1">
                     <ul>
-                        <li v-for="item in parameter"><span class="taxon">{{item.name}}</span><span class="text">{{item.price}}</span></li>
+                        <li v-for="item in parameterList"><span class="taxon">{{item.name}}</span><span class="text">{{item.price}}</span></li>
                     </ul>
                 </div>
                 <div class="affirm" @click="close">完成</div>
@@ -109,16 +99,7 @@
 
 <script type="text/javascript">
 // import '../lib/TouchSlide.1.1.js';
-
-    var parameter=[
-        {name:"品种",price:"化妆品/面霜"},
-        {name:"期限使用",price:"2016-12-10至2020-12-10"},
-        {name:"化妆品净含量",price:"30ml 60ml 100ml"},
-        {name:"品牌",price:"海蓝之谜"},
-        {name:"产品",price:"美国"},
-        {name:"是否进口",price:"进口"}
-    ]
-    var myChoice=['已选择'];
+import {Checker, CheckerItem, Swiper} from 'vux'
 
 export default {
     data () {
@@ -137,24 +118,38 @@ export default {
             modal_show: false,
             modal1_show: false,
             select: '',
-            parameter:parameter,
+            parameterList:'',
             goodsData: '',
+            bannerList: '',
             picUrl: BASEPICURL,
-            specificationsList: ''
+            specificationsList: '',
+            goodsId: this.$route.params.dataId
         }
     },
+    components: {
+        Swiper,
+        Checker,
+        CheckerItem
+    },
     created () {
-        console.log('init');
-        console.log('deviceid: ' + this.$route.params.deviceId);
-        console.log('dataId: ' + this.$route.params.dataId);
         var self = this;
         // 商品列表
-        fetch(BASEURL + '/bill-steward/shopping/queryGoodsDetails')
+        fetch(GET(BASEURL + '/bill-steward/shopping/queryGoodsDetails',
+                    {
+                        goodsId:self.goodsId
+                    }
+                )
+            )
             .then(response => response.json())
             .then(data => {
             var data = data.result[0]
-            self.goodsData = data.goodsQueryRespVo
-            self.specificationsList = data.goodsSpecificationsVoList
+            self.goodsData = data.goodsQueryRespVo   //商品简略信息
+            self.specificationsList = data.goodsSpecificationsVoList  // 规格分类
+            self.bannerList = data.goodsHighDefinitionPictureList.map((one, index) => ({
+                url: 'javascript:',
+                img: BASEPICURL + one.pictureAdd
+            }))
+            self.parameterList = data.categoryAttributeList
             console.log(self.goodsData)
         }).catch((error) => {
             console.error(error);
@@ -172,111 +167,85 @@ export default {
         // });
         console.log('this.select',this.select);
     },
-        methods: {
-            // 商品选择弹窗
-            ScaleSize: function() {
-                this.scroll = false;
-                this.modal_show = true;
-                this.isactive = false;
-                this.da = true;
-                // var myScroll = new IScroll('#wrapper', {
-                //     mouseWheel: true,
-                //     scrollbars: false,
-                //     tap: true
-                // });
-            },
-            // 关闭弹窗
-            close: function() {
-                var _this = this;
-                this.isactive = true;
-                setTimeout(function() {
-                    _this.modal_show = false;
-                    _this.modal1_show = false;
-                }, 300)
-            },
-            // 不关闭弹窗，禁止冒泡
-            noclose($event) {
-                event.cancelBubble = true;
-            },
-            // 打开商品参数弹窗
-            ViewParameters: function() {
-                this.scroll = false;
-                this.modal1_show = true;
-                this.isactive = false;
-                this.da = true;
-                // this.isA=true;
-                // var myScroll1 = new IScroll('#wrapper1', {
-                //     mouseWheel: true,
-                //     scrollbars: false,
-                //     tap:true
-                // });
-            },
-            // 选择商品事件
-            check: function(id,index,ddi,unv,price) {
-                var _this = this;
-                Vue.set(_this.sortId, id, index);
-                myChoice[id+1]=ddi;
-                choice[id+1]='';
-                this.Choice=choice.join(" ");
-
-                var num=0;
-                for(var i=0;i<choice.length;i++){
-                    if(i>0){
-                        num+=choice[i].length;
-                    }
-                }
-                this.show=num;
-                // console.log(Boolean(num))
-                this.myChoice=myChoice.join(" ");
-                console.log(this.Choice);
-                this.inventory=unv;
-                // this.price=;
-                console.log(this.sortId);
-                // 价格
-                // this.price[id]=price;
-                Vue.set(_this.price, id, price)
-                console.log(this.price)
-            },
-            add_cart:function(){
-                console.log(myChoice.length,select.length)
-                if(myChoice.length==select.length+1){
-                    this.sopCar++;
-                }else{
-                    this.ScaleSize()
-                }
-
-            },
-            // 减
-            prep:function(){
-                if(this.piece>1){
-                    this.piece--;
-                }
-
-                // console.log(this.piece);
-            },
-            // 加
-            plus:function(){
-                this.piece++;
-            },
-            init:function(){
-                var _this=this;
-                console.log(this.sortId);
-                for(var i=0;i<select.length;i++){
-                    choice.push(select[i].title);
-                }
-                this.Choice=choice.join(" ")
-                Vue.set(_this.price, 0, select[0].select1[0].price)
-            }
+    methods: {
+        // 商品选择弹窗
+        ScaleSize: function() {
+            this.scroll = false;
+            this.modal_show = true;
+            this.isactive = false;
+            this.da = true;
+            // var myScroll = new IScroll('#wrapper', {
+            //     mouseWheel: true,
+            //     scrollbars: false,
+            //     tap: true
+            // });
         },
-        computed: {
-            finalPrice: function () {
-                var num=0;
-                for(var i=0;i<this.price.length;i++){
-                    num+= parseFloat(this.price[i])
-                }
-                return num;
-
+        // 关闭弹窗
+        close: function() {
+            var _this = this;
+            this.isactive = true;
+            setTimeout(function() {
+                _this.modal_show = false;
+                _this.modal1_show = false;
+            }, 300)
+        },
+        // 不关闭弹窗，禁止冒泡
+        noclose($event) {
+            event.cancelBubble = true;
+        },
+        // 打开商品参数弹窗
+        ViewParameters: function() {
+            this.scroll = false;
+            this.modal1_show = true;
+            this.isactive = false;
+            this.da = true;
+            // this.isA=true;
+            // var myScroll1 = new IScroll('#wrapper1', {
+            //     mouseWheel: true,
+            //     scrollbars: false,
+            //     tap:true
+            // });
+        },
+        add_cart:function(){
+            console.log(myChoice.length,select.length)
+            if(myChoice.length==select.length+1){
+                this.sopCar++;
+            }else{
+                this.ScaleSize()
             }
+
+        },
+        // 减
+        prep:function(){
+            if(this.piece>1){
+                this.piece--;
+            }
+
+            // console.log(this.piece);
+        },
+        // 加
+        plus:function(){
+            this.piece++;
+        },
+        init:function(){
+            var _this=this;
+            console.log(this.sortId);
+            for(var i=0;i<select.length;i++){
+                choice.push(select[i].title);
+            }
+            this.Choice=choice.join(" ")
+            Vue.set(_this.price, 0, select[0].select1[0].price)
         }
+    },
+    computed: {
+        finalPrice: function () {
+            var num=0;
+            for(var i=0;i<this.price.length;i++){
+                num+= parseFloat(this.price[i])
+            }
+            return num;
+
+        }
+    }
 }
 </script>

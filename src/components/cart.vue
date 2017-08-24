@@ -1,16 +1,16 @@
 <template>
     <div class="container cart-container">
 
-        <div class="title" v-show="shopList.length">
+        <div class="title" v-show="goodsList.length">
             购物车共{{totalNum}}件宝贝<span>编辑</span>
         </div>
-        <div class="tips" v-show="shopList.length == 0">
+        <div class="tips" v-show="goodsList.length == 0">
             <img src="/static/cart-null.png" alt="">
             <div>赶紧去逛逛吧~</div>
         </div>
-        <div class="con" id="wrapper" v-show="shopList.length">
+        <div class="con" id="wrapper" v-show="goodsList.length">
             <ul>
-                <li v-for="(item, index) in shopList">
+                <li v-for="(item, index) in goodsList">
                     <div class="chek" :class="{'cheked': item.checked}" @tap="chooseShop(item)"></div>
                     <div class="con-img"><img :src="item.img"></div>
                     <div class="con-detail">
@@ -24,7 +24,8 @@
                 <li></li>
             </ul>
         </div>
-        <footer v-show="shopList.length">
+        <footer v-show="goodsList.length">
+            <div class="chek" :class="{'cheked': ''}" @tap="chooseShop(item)"></div>
             <span>总计：{{totalMoney | formatMoney}}</span><span>去结算({{totalCheckNum}})</span>
         </footer>
     </div>
@@ -50,7 +51,7 @@ export default {
         return {
                 totalMoney: 0,
                 totalCheckNum: 0,
-                shopList:list1,
+                goodsList:list1,
                 chooseList:[]
         }
     },
@@ -66,7 +67,7 @@ export default {
     },
     computed: {
         totalNum: function(){
-            return this.shopList.length;
+            return this.goodsList.length;
         }
     },
     methods: {
@@ -95,7 +96,7 @@ export default {
             this.totalMoney = 0;
             this.totalCheckNum = 0;
             var _this = this;
-            this.shopList.forEach(function(item, index){
+            this.goodsList.forEach(function(item, index){
                 if(item.checked){
                     _this.totalMoney += item.price * item.num;
                     _this.totalCheckNum += item.num;
@@ -103,13 +104,13 @@ export default {
             });
         },
         delShop: function(product){
-            var index = this.shopList.indexOf(product);
+            var index = this.goodsList.indexOf(product);
             var _this = this;
-            _this.shopList.splice(index, 1);
+            _this.goodsList.splice(index, 1);
         }
     },
     mounted (){
-        // this.totalNum = this.shopList.length;
+        // this.totalNum = this.goodsList.length;
         var myScroll = new IScroll('#wrapper',{
             mouseWheel: true,
             // scrollbars: true,

@@ -21,7 +21,7 @@
 
 
             <li v-for="(item,index) in hotList" >
-                <router-link :to="{ name: 'product-details', params: { deviceId: 12, dataId:456 }}">
+                <router-link :to="{ name: 'product-details', params: { deviceId: 12, dataId:item.goodsId }}">
                 <img :src="picUrl + item.thumbnailAddr" alt="">
                 <div class="info">
                     <p class="title" v-text="item.goodsName"></p>
@@ -51,7 +51,7 @@
             <li>
                 <span class="icon icon-cart"></span>
                 <div class="title">购物车</div>
-                <div class="count">1</div>
+                <div class="count">{{cartList.length}}</div>
             </li>
           </router-link>
           <router-link :to="{ name: 'order-center', params: { deviceId: 123, dataId:456 }}">
@@ -71,104 +71,112 @@ import Vue from 'vue'
 Vue.use(VueScroller)
 
 export default {
-  name: 'index',
-  data () {
-    return {
-        bannerList: [],
-        hotList: '',
-        menuList: '',
-        showList1: true,
-        scrollTop: 0,
-        onFetching: false,
-        bottomCount: 20,
-        items: [],
-        picUrl: BASEPICURL
-    }
-  },
-  components: {
-    Swiper,
-    SwiperItem,
-    GroupTitle,
-    XButton,
-    LoadMore
-  },
-  created () {
-    console.log(BASEURL);
-    var that = this;
-    var tsUrl = 'http://192.168.20.23:8083/order-center/pay/test'
-    var url = 'https://api.github.com/repos/vuejs/vue/commits?per_page=3&sha='
-    // fetch('http://192.168.20.23:8083/bill-steward/shopping/queryGoods?channel=app&goodsCategory=C090301&startRow=10&pageSize=2')
-    //   .then(function(response) {
-    //     // alert(response);
-    //     return response.text()
-    //   }).then(function(body) {
-    //     this.hotList = body.result;
-    //     console.info(this.hotList)
-    //   }).catch(() => {
-    //     alert('error');
-    //   });
-    // 分类菜单
-    fetch(BASEURL + '/bill-steward/steward/menu')
-        .then(response => response.json())
-        .then(data => {
-            var list = data.object.list;
-            var menuList = list.filter(function (item) {
-                return item.spare2 == "0002" && item.plateType == "2"
-            });
-            var bannerList = list.filter(function (item) {
-                return item.spare2 == "0002" && item.plateType == "1"
-            });
-
-            that.menuList = menuList.reverse()
-            that.bannerList = bannerList.map((one, index) => ({
-                url: 'javascript:',
-                img: BASEPICURL + one.imgUrl
-            }))
+    name: 'index',
+    data () {
+        return {
+            bannerList: [],
+            hotList: '',
+            menuList: '',
+            showList1: true,
+            scrollTop: 0,
+            onFetching: false,
+            bottomCount: 20,
+            items: [],
+            picUrl: BASEPICURL,
+            cartList: ''
+        }
+    },
+    components: {
+        Swiper,
+        SwiperItem,
+        GroupTitle,
+        XButton,
+        LoadMore
+    },
+    created () {
+        var self = this;
+        self.fetchCartList();
+        // 分类菜单
+        fetch(BASEURL + '/bill-steward/steward/menu')
+            .then(response => response.json())
+            .then(data => {
+                var list = data.object.list;
+                var menuList = list.filter(function (item) {
+                    return item.spare2 == "0002" && item.plateType == "2"
+                });
+                var bannerList = list.filter(function (item) {
+                    return item.spare2 == "0002" && item.plateType == "1"
+                });
+                // 分类菜单
+                self.menuList = menuList.reverse()
+                // 焦点图
+                self.bannerList = bannerList.map((one, index) => ({
+                    url: 'javascript:',
+                    img: BASEPICURL + one.imgUrl
+                }))
+            }).catch(() => {
+                console.error('error');
+        });
+        // 商品列表
+        fetch(BASEURL + '/bill-steward/shopping/queryGoods')
+            .then(response => response.json())
+            .then(data => {
+            self.hotList = data.result[0].result
+            console.info(self.hotList)
         }).catch(() => {
             console.error('error');
-    });
-    // 商品列表
-    fetch(BASEURL + '/bill-steward/shopping/queryGoods')
-        .then(response => response.json())
-        .then(data => {
-        that.hotList = data.result[0].result
-        console.log(that.hotList)
-      }).catch(() => {
-        console.error('error');
-      });
-  },
-  mounted () {
-    for (var i = 1; i <= 20; i++) {
-      this.items.push(i + ' - keep walking, be 2 with you.');
-    }
-    this.top = 1;
-    this.bottom = 20;
-    // console.log(BASEURL);
+        });
 
-  },
+    },
+    mounted () {
+        for (var i = 1; i <= 20; i++) {
+          this.items.push(i + ' - keep walking, be 2 with you.');
+        }
+        this.top = 1;
+        this.bottom = 20;
+        // console.info(BASEURL);
+
+    },
     activated () {
       // this.$refs.scroller.reset()
     },
     methods : {
-        add: function (e) {
-        return false;
-    },
-    refresh: function (done) {
-      var self = this
-      setTimeout(function () {
-        var start = self.top - 1
-        for (var i = start; i > start - 10; i--) {
-          self.items.splice(0, 0, i + ' - keep walking, be 2 with you.');
-        }
-        self.top = self.top - 10;
-        done();
-      }, 1500)
-    },
+        add () {
+            return false;
+        },
+        fetchCartList () {
+            var self = this;
+            // 购物车查询
+            fetch(GET(BASEURL + '/bill-steward/cart/userCartQuery',
+                        {
+                            userId: '51000001093876'
+                        }
+                    )
+                )
+                .then(response => response.json())
+                .then(data => {
+                self.cartList = data.result.goodsList
+                // console.info(self.cartList)
+            }).catch(() => {
+                console.error('error');
+            });
+        },
+        refresh (done) {
+            var self = this
+            setTimeout(function () {
+            var start = self.top - 1
+            for (var i = start; i > start - 10; i--) {
+              self.items.splice(0, 0, i + ' - keep walking, be 2 with you.');
+            }
+            self.top = self.top - 10;
+            done();
+            }, 1500)
+        },
 
-    infinite: function (done) {
-      var self = this
-        console.log(self.hotList);
-      setTimeout(function () {
+        infinite (done) {
+        var self = this
+        console.info(self.hotList);
+        setTimeout(function () {
         var start = self.bottom + 1;
         for (var i = start; i < start + 10; i++) {
           self.items.push(i + ' - keep walking, be 2 with you.');
@@ -176,9 +184,9 @@ export default {
         }
         self.bottom = self.bottom + 10;
         done();
-      }, 1500)
+        }, 1500)
+        }
     }
-  }
 }
 </script>
 
